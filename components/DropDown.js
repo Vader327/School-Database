@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Animated } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, ScrollView, TouchableWithoutFeedback, Animated } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 export default class DropDown extends React.Component{
@@ -59,7 +59,7 @@ export default class DropDown extends React.Component{
       <View>
         <TouchableWithoutFeedback onPress={this.toggleDropDown}>
           <Animated.View style={[styles.dropDownHeader, {borderColor: colorAnim}]}>
-            <Text style={!this.state.activated ? {color: '#aaaaaa'} : null}>{this.state.activated ? this.props.data[this.state.selectedIndex] : this.props.placeholder}</Text>
+            <Text style={{color: this.state.activated ? 'black' : '#aaaaaa'}}>{this.state.activated ? this.props.data[this.state.selectedIndex] : this.props.placeholder}</Text>
             <Animated.View style={{transform: [{rotate: spin}]}}>
               <Icon name="chevron-small-down" type="entypo" />
             </Animated.View>
@@ -67,14 +67,14 @@ export default class DropDown extends React.Component{
         </TouchableWithoutFeedback>
         
         {this.dropDownHeight!=0
-        ? <Animated.View style={[styles.dropDownBox, {height: this.dropDownHeight, opacity: this.dropDownHeight}]}>
-          <ScrollView>
-            {this.props.data.map((item, index)=>(
-              <TouchableOpacity key={index} onPress={()=>{this.toggleDropDown(); this.sendValue(index)}} style={{padding: 7}}>
-                <Text>{item}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+        ? <Animated.View style={[styles.dropDownBox, {height: this.dropDownHeight, opacity: this.dropDownHeight, overflow: 'hidden'}]}>
+            <ScrollView>
+              {this.props.data.map((item, index)=>(
+                <TouchableHighlight underlayColor="#eeeeee" key={index} onPress={()=>{this.toggleDropDown(); this.sendValue(index)}} style={{padding: 7}}>
+                  <Text>{item}</Text>
+                </TouchableHighlight>
+              ))}
+            </ScrollView>
           </Animated.View>
         : null}
       </View>

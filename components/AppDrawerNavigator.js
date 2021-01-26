@@ -13,7 +13,7 @@ export const AppDrawerNavigator = createDrawerNavigator({
   },
   Information: {
     screen: InformationScreen,
-    navigationOptions: {drawerIcon: ({tintColor})=><FontAwesome5 name="database" size={20} color={tintColor} />}
+    navigationOptions: {drawerIcon: ({tintColor})=><FontAwesome5 name="database" size={20} color={tintColor} />, drawerLabel: 'Records'}
 
   },
   Settings: {

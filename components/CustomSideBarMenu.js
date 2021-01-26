@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Avatar, BottomSheet } from 'react-native-elements';
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { Avatar } from 'react-native-elements';
 import { DrawerItems } from 'react-navigation-drawer';
 import { Ionicons } from '@expo/vector-icons';
 import firebase from 'firebase';
@@ -43,10 +43,12 @@ export default class CustomSideBarMenu extends React.Component{
   render(){
     return(
       <View style={{flex: 1}}>
-        <View style={{backgroundColor: '#1c77ff', paddingTop: 30, paddingBottom: 10, flexDirection: 'row', justifyContent: "space-evenly"}}>
+        <View style={{backgroundColor: '#1c77ff', paddingTop: 40, paddingBottom: 10, flexDirection: 'row', justifyContent: "space-evenly"}}>
+          <Ionicons name="ios-close" size={40} color="white" style={{alignSelf: 'flex-start', bottom: 10}}
+          onPress={()=>{this.props.navigation.toggleDrawer()}} />
+
           <Avatar rounded source={{uri: this.state.image}} size="large"
-          icon={{name: "school", type: "font-awesome-5"}} containerStyle={{alignSelf: 'center', marginBottom: 10}}
-          onPress={()=>{this.setState({isModalVisible: true})}} />
+          icon={{name: "school", type: "font-awesome-5"}} containerStyle={{alignSelf: 'center', marginBottom: 10}} />
 
           <View style={{justifyContent: 'center'}}>
             <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>{this.state.schoolName}</Text>
@@ -59,12 +61,18 @@ export default class CustomSideBarMenu extends React.Component{
         </View>
 
         <View style={{width: '80%', height: 2, backgroundColor: '#eeeeee', alignSelf: 'center'}} />
+
         <View style={styles.logOutContainer}>
-          <TouchableOpacity style={styles.logOutButton}
-          onPress={()=>{this.props.navigation.navigate("LoginScreen")}}>
-            <Ionicons name="ios-log-out" size={20} color="#696969" />
-            <Text style={{fontWeight: '700', marginLeft: 38}}>Log Out</Text>
-          </TouchableOpacity>
+          <TouchableHighlight underlayColor="#eeeeee" onPress={()=>{
+            firebase.auth().signOut().then(()=>{
+              this.props.navigation.navigate("LoginScreen")
+            }).catch(err=>{console.log(err)})
+          }}>
+            <View style={styles.logOutButton}>
+              <Ionicons name="ios-log-out" size={20} color="#696969" />
+              <Text style={{fontWeight: '700', marginLeft: 38}}>Log Out</Text>
+            </View>
+          </TouchableHighlight>
         </View>
       </View>
     )
@@ -74,8 +82,7 @@ export default class CustomSideBarMenu extends React.Component{
 var styles = StyleSheet.create({
   logOutContainer:{
     flex: 0.2,
-    justifyContent: 'flex-end',
-    paddingBottom: 30,
+    justifyContent: 'center'
   },
   logOutText:{
     fontWeight: 'bold',
@@ -85,6 +92,7 @@ var styles = StyleSheet.create({
   logOutButton:{
     flexDirection: 'row',
     flexWrap: 'wrap',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
 })

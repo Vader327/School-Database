@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Modal, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Modal, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Entypo } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import firebase from 'firebase';
 import db from '../config';
@@ -23,7 +24,7 @@ export default class LoginScreen extends React.Component{
 		if(password !== confirmPassword){
 			return Alert.alert("Passwords do not match!")
 		}
-		else if(this.state.contact!=0){
+		else if(this.state.contact!=0 && this.state.schoolName.trim() != "" && this.state.address.trim() != ""){
 			firebase.auth().createUserWithEmailAndPassword(email, password)
 			.then(()=>{
 				db.collection("users").add({
@@ -39,12 +40,14 @@ export default class LoginScreen extends React.Component{
 			.catch((error)=>Alert.alert(error.message))
 		}
 		else if(this.state.contact==0){Alert.alert("Invalid Contact!")}
+		else if(this.state.schoolName.trim()==""){Alert.alert("School Name cannot be empty!")}
+		else if(this.state.address.trim()==""){Alert.alert("Address cannot be empty!")}
 	}
 
 	userLogin=(username, password)=>{
 		firebase.auth().signInWithEmailAndPassword(username, password)
 		.then(()=>{
-			return this.props.navigation.navigate("Dashboard")
+			this.props.navigation.navigate("Dashboard")
 		})
 		.catch((error)=>Alert.alert(error.message))
   }
@@ -53,9 +56,9 @@ export default class LoginScreen extends React.Component{
 		return(
 			<Modal animationType="slide" transparent={true} visible={this.state.isModalVisible}>
 				<View style={styles.modalContainer}>
-					<KeyboardAvoidingView behavior="padding" enabled style={{paddingTop: 20}}>
+					<KeyboardAvoidingView behavior={Platform.OS == "android" ? null : "padding"} enabled style={{paddingTop: 20}}>
 						<ScrollView>
-							<Text style={{fontWeight: '600', alignSelf: 'center', fontSize: 25, color:'#1c77ff'}}>Sign Up</Text>
+							<Text style={{fontWeight: 'bold', alignSelf: 'center', fontSize: 25, color:'#1c77ff'}}>Sign Up</Text>
 							<TextInput style={styles.input} placeholder="School Name"
 							onChangeText={(text)=>{this.setState({schoolName: text})}} />
 
@@ -93,37 +96,47 @@ export default class LoginScreen extends React.Component{
 
   render(){
     return (
-      <View style={{height: '100%'}}>
+      <KeyboardAvoidingView behavior={Platform.OS == "android" ? null : "padding"} enabled style={{height: '100%'}}>
         <View style={{alignContent: 'center', justifyContent: 'center'}}>
 					{this.showModal()}
 				</View>
-        <StatusBar style="dark" />
-        <Text style={{color: '#1c77ff', fontSize: RFValue(40), alignSelf: 'center', marginTop: 50, fontWeight: 'bold'}}>
-          School Databank
-        </Text>
-        <Text style={{fontWeight: 'bold', alignSelf: 'center', textAlign: 'center', marginTop: 20, lineHeight: 20, paddingHorizontal: 5}}>
-          For schools to store student and teacher information with ease
-        </Text>
-        <View style={{marginTop: 20, alignItems: 'center', width: '100%', flex: 1}}>
-          <TextInput placeholder="Email" keyboardType="email-address" style={styles.input}
-          onChangeText={(text)=>{this.setState({email: text})}} />
 
-          <TextInput placeholder="Password" secureTextEntry={true} style={styles.input}
-          onChangeText={(text)=>{this.setState({password: text})}} />
+        <StatusBar style="light" backgroundColor="#185dc4" />
+
+				<View style={{backgroundColor: '#1c77ff'}}>				
+					<Text style={{color: 'white', fontSize: RFValue(40), alignSelf: 'center', marginTop: 50, fontWeight: 'bold'}}>
+						School Databank
+					</Text>
+
+					<Text style={{color: 'white', fontWeight: 'bold', alignSelf: 'center', textAlign: 'center', marginVertical: 20, lineHeight: 20, fontSize: 15, paddingHorizontal: 5}}>
+						For schools to store student and teacher information with ease
+					</Text>
+				</View>
+
+        <View style={{marginTop: 20, alignItems: 'center', width: '100%', flex: 1, marginTop: 50}}>					
+					<View style={{width: '100%', flexDirection: 'row', alignItems: 'center'}}>
+						<Entypo name="mail" size={17} color="lightgray" style={{left: 16, bottom: Platform.OS == "android" ? 0 : 2}} />
+						<TextInput placeholder="Email" keyboardType="email-address" style={[styles.input, {marginTop: 0, paddingLeft: 23}]}
+          	onChangeText={(text)=>{this.setState({email: text})}} value={this.state.email} />
+					</View>
+
+					<View style={{width: '100%', flexDirection: 'row', alignItems: 'center', marginTop: 30}}>
+						<Entypo name="lock" size={17} color="lightgray" style={{left: 16, bottom: Platform.OS == "android" ? 2 : 5}} />
+						<TextInput placeholder="Password" secureTextEntry={true} style={[styles.input, {marginTop: 0, paddingLeft: 23}]}
+          	onChangeText={(text)=>{this.setState({password: text})}} value={this.state.password} />
+					</View>
         </View>
 
         <TouchableOpacity style={styles.button}
         onPress={()=>{this.userLogin(this.state.email, this.state.password)}}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        
-        <Text style={[styles.register, {color: 'black', bottom: 100}]}>OR</Text>
-        
+                
         <TouchableOpacity onPress={()=>{this.setState({isModalVisible: true})}}
-        style={{height: 50, justifyContent: 'center', alignItems: 'center', bottom: 40}} >
+        style={[styles.button, {bottom: 20, backgroundColor: 'white'}]} >
           <Text style={styles.register}>Register your School</Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -131,9 +144,9 @@ export default class LoginScreen extends React.Component{
 const styles = StyleSheet.create({
   button:{
     position: 'absolute',
-    bottom: 150,
-    borderRadius: 17,
-    width: '50%',
+    bottom: 90,
+    borderRadius: 50,
+    width: '80%',
     height: 50,
     alignSelf: 'center',
     alignItems: 'center',

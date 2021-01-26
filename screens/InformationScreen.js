@@ -395,9 +395,9 @@ export default class InformationScreen extends React.Component{
 		return(
 			<Modal animationType="slide" transparent={true} visible={this.state.isModalVisible}>
 				<View style={styles.modalContainer}>
-					<KeyboardAvoidingView behavior="padding" enabled>
-            <View style={{width: '100%', backgroundColor: '#1c77ff', paddingTop: 25, paddingBottom: 10}}>
-							<Text style={{fontWeight: '600', alignSelf: 'center', fontSize: 20, color:'white'}}>
+					<KeyboardAvoidingView behavior={Platform.OS == "android" ? null : "padding"} enabled>
+            <View style={{width: '100%', backgroundColor: '#1c77ff', paddingTop: Platform.OS == "android" ? 10 : 25, paddingBottom: 10}}>
+							<Text style={{fontWeight: 'bold', alignSelf: 'center', fontSize: 20, color: 'white'}}>
                 {this.state.modalType=="register"
                 ? (this.state.type=="teacher" ? "Add Teacher" : "Add Student")
                 : "Edit Details"}
@@ -791,13 +791,13 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 0},
     shadowOpacity: 1,
 		shadowRadius: 15,
-		elevation: 16,
+		elevation: 7,
 		transform: [{scale: 1}]
 	},
 	buttonText:{
 		color: '#ffffff',
 		fontSize: 18,
-		fontWeight: '600',
+		fontWeight: 'bold',
 		alignSelf: 'center',
   },
   notFound:{

@@ -1,7 +1,7 @@
-import firebase from 'firebase';
-require('@firebase/firestore');
+import * as firebase from 'firebase';
+import '@firebase/firestore';
 
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyBCtO74KZBYBQR5XymeACZJKd_4QL_pVO8",
     authDomain: "school-database-3e28b.firebaseapp.com",
     databaseURL: "https://school-database-3e28b.firebaseio.com",
@@ -12,6 +12,8 @@ var firebaseConfig = {
     measurementId: "G-YZZFYN63XG",
 };
 
-firebase.initializeApp(firebaseConfig);
+if(!firebase.apps.length){
+    firebase.initializeApp(firebaseConfig);
+}
 
 export default firebase.firestore();
